@@ -7,7 +7,7 @@
 *  initialize array of lists of WordEntry
 */
 HashTable::HashTable (int s):size(s) {
-	hashTable = new WordEntry();
+	hashTable = new list<WordEntry>[size];
 }
 
 
@@ -18,7 +18,8 @@ HashTable::HashTable (int s):size(s) {
 *  ensure array index doesn't go out of bounds
 */
 int HashTable::computeHash(const string &s) {
-	return 1;
+	int a = s.size()%size;
+	return a;
 }
 
 
@@ -30,7 +31,17 @@ int HashTable::computeHash(const string &s) {
 *   appropriate array index
 */
 void HashTable::put(const string &s, int score) {
+	 int a =computeHash(s);
+	 std::list<WordEntry>::iterator i;
 	 
+	for(i = hashTable[a].begin(); i != hashTable[a].end(); ++i) {
+		if(i->getWord() == s) {
+			i->addNewAppearance(score);
+			return;
+		}
+	}
+	const WordEntry w(s,score);
+	hashTable[a].push_back(w);
 }
 
 /* getAverage
@@ -43,7 +54,15 @@ void HashTable::put(const string &s, int score) {
 */
 
 double HashTable::getAverage(const string &s) {
-	return 1.0;
+	int a = computeHash(s);
+	std::list<WordEntry>::iterator i;
+	
+	for(i = hashTable[a].begin(); i!= hashTable[a].end(); ++i) {
+		if(i->getWord() ==s) {
+			return i->getAverage();
+		}
+	}
+	return 2.0;
 }
 
 /* contains
@@ -52,6 +71,13 @@ double HashTable::getAverage(const string &s) {
 *         false if word is not in the hash table
 */
 bool HashTable::contains(const string &s) {
-	return true;
+	 int a =computeHash(s);
+	 std::list<WordEntry>::iterator i;
+	for(i = hashTable[a].begin(); i != hashTable[a].end(); ++i) {
+		if(i->getWord() == s) {
+			return true;;
+		}
+	}
+	return false;
 }
 
